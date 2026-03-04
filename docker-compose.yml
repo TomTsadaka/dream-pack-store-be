@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "10000:10000"
+    environment:
+      PORT: 10000
+      APP_ENV: local
+      APP_DEBUG: true
+      APP_KEY: base64:UvubEOyYzf0wsfAEufm4b0cBfErvSMVkJ2HsEoZhLgs=
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: pgsql
+      DB_HOST: localhost
+      DB_PORT: 5433
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel
+      DB_PASSWORD: secret
+      SEED_ADMIN: true
+      # Bypass Pail provider errors
+      REGISTER_PHP_SERVICES: false
+    volumes:
+      # Mount storage and cache directories
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
